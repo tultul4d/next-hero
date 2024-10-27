@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 
 // Function to fetch posts
 const getAbouts = async () => {
@@ -16,6 +15,9 @@ const Page = () => {
     const [postData, setPostData] = useState([]);
     const [selectedPost, setSelectedPost] = useState(null); // For viewing details
     const [editPost, setEditPost] = useState(null); // For editing post
+
+    // New post state
+    const [newPost, setNewPost] = useState({ title: '', body: '' });
 
     // Fetch posts once component mounts
     useEffect(() => {
@@ -49,12 +51,52 @@ const Page = () => {
     // View post details
     const handleView = (post) => {
         setSelectedPost(post);
-        alert(`Viewing details for post titled "${post.title}"`);
+    };
+
+    // Handle new post form submission
+    const handleNewPostSubmit = (e) => {
+        e.preventDefault();
+        if (!session) {
+            alert("You need to be logged in to add a post.");
+            return;
+        }
+        const newId = postData.length ? postData[postData.length - 1].id + 1 : 1;
+        const postToAdd = { ...newPost, id: newId };
+        setPostData([...postData, postToAdd]);
+        setNewPost({ title: '', body: '' }); // Reset form
+        alert(`New post titled "${postToAdd.title}" added.`);
     };
 
     return (
         <div>
-            <h2 className='text-center mb-10 font-bold'>All Posts</h2>
+            <h2 className='text-center mb-10 font-bold'>All Posts -{postData?.length}</h2>
+
+            {/* New Post Form - Only show if user is logged in */}
+            {session ? (
+                <form onSubmit={handleNewPostSubmit} className="mb-8 p-4 bg-base-200 rounded-lg">
+                    <h3 className="text-xl font-semibold mb-4">Add New Post</h3>
+                    <label className="block mb-2">Title:</label>
+                    <input
+                        type="text"
+                        value={newPost.title}
+                        onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+                        className="input input-bordered w-full mb-4"
+                        required
+                    />
+                    <label className="block mb-2">Body:</label>
+                    <textarea
+                        value={newPost.body}
+                        onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
+                        className="textarea textarea-bordered w-full mb-4"
+                        required
+                    />
+                    <button type="submit" className="btn btn-primary w-full">Add Post</button>
+                </form>
+            ) : (
+                <p className="text-red-500 mb-8">Please log in to add a new post.</p>
+            )}
+
+            {/* Display All Posts */}
             <div className='grid grid-cols-2 gap-4'>
                 {postData.map(({ id, title, body }) => (
                     <div key={id} className="bg-base-200 p-4 rounded-lg shadow-md">
@@ -62,11 +104,9 @@ const Page = () => {
                         <h1>{body}</h1>
                         {session ? (
                             <div className="flex space-x-2">
-                                <button onClick={() => handleUpdate({ id, title, body })} className="btn btn-primary"><Link href={`/about/update/${id}`}>Update</Link></button>
+                                <button onClick={() => handleUpdate({ id, title, body })} className="btn btn-primary">Update</button>
                                 <button onClick={() => handleDelete(id)} className="btn btn-error">Delete</button>
-                                <button onClick={() => handleView({ id, title, body })} className="btn btn-secondary">
-                                    <Link href={`/about/${id}`}>View</Link>
-                                </button>
+                                <button onClick={() => handleView({ id, title, body })} className="btn btn-secondary">View</button>
                             </div>
                         ) : (
                             <p className="text-red-500">Please log in to perform actions.</p>
@@ -77,19 +117,22 @@ const Page = () => {
 
             {/* View Modal */}
             {selectedPost && (
-                <div className="modal">
+                <div className="modal modal-open">
                     <div className="modal-box">
                         <h3 className="font-bold text-lg">Post Details</h3>
-                        <p>Title: {selectedPost.title}</p>
-                        <p>Post ID: {selectedPost.id}</p>
-                        <button onClick={() => setSelectedPost(null)} className="btn btn-sm btn-circle absolute right-2 top-2">✕</button>
+                        <p><strong>Title:</strong> {selectedPost.title}</p>
+                        <p><strong>Body:</strong> {selectedPost.body}</p>
+                        <p><strong>Post ID:</strong> {selectedPost.id}</p>
+                        <div className="modal-action">
+                            <button onClick={() => setSelectedPost(null)} className="btn btn-secondary">Close</button>
+                        </div>
                     </div>
                 </div>
             )}
 
             {/* Edit Modal */}
             {editPost && (
-                <div className="modal">
+                <div className="modal modal-open">
                     <div className="modal-box">
                         <h3 className="font-bold text-lg">Edit Post</h3>
                         <label className="block">Title:</label>

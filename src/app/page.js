@@ -1,4 +1,7 @@
+export const dynamic = "force-dynamic"
+
 import Image from "next/image";
+
 import Heading from "./components/Heading";
 
 export default function Home() {

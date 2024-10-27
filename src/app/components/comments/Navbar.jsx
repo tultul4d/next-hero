@@ -32,24 +32,34 @@ const Navbar = () => {
                         tabIndex={0}
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
                     >
-                        <li><a href="">About</a></li>
-                       
-                      
+                        {/* Add dropdown items here if needed */}
                     </ul>
                 </div>
-                <a className="btn btn-ghost text-xl">daisyUI</a>
+                <h1 className="btn btn-ghost text-xl">daisyUI</h1>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
-                <li><a href="/about">About</a></li>
-                <li><a href="/">Home</a></li>
+                    <li>
+                        <Link href="about">
+                            About
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="">
+                            Home
+                        </Link>
+                    </li>
                 </ul>
             </div>
             <div className="navbar-end">
                 {status === "authenticated" ? (
-                    <button onClick={() => signOut()}>Logout</button>
+                    <button onClick={() => signOut()} className="btn">
+                        Logout
+                    </button>
                 ) : (
-                    <button onClick={() => signIn()}>Login</button>
+                    <button onClick={() => signIn()} className="btn">
+                        Login
+                    </button>
                 )}
             </div>
         </div>

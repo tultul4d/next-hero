@@ -11,35 +11,35 @@ const handler = NextAuth({
             password: { label: "Password", type: "password", required: true, placeholder: "your password" },
          },
          async authorize(credentials) {
-            const { email, password } = credentials;
+            // const { email, password } = credentials;
 
             // Find the user by email
-            const currentUser = users.find((user) => user.email === email);
+            // const currentUser = users.find((user) => user.email === email);
             
             // Check if user exists and password matches
-            if (currentUser && currentUser.password === password) {
-               return currentUser; // Return user if authenticated
+            if (!credentials) {
+               return null; // Return user if authenticated
             }
-            return null; // Return null if authentication fails
+            return true; // Return null if authentication fails
          },
       }),
    ],
   
 });
 
-const users = [
-   {
-      id: 1,
-      name: "Hamid",
-      email: "tultul@gmail.com",
-      password: "password"
-   },
-   {
-      id: 2,
-      name: "Hamid",
-      email: "tultuleee@gmail.com",
-      password: "password"
-   }
-]
+// const users = [
+//    {
+//       id: 1,
+//       name: "Hamid",
+//       email: "tultul@gmail.com",
+//       password: "password"
+//    },
+//    {
+//       id: 2,
+//       name: "Hamid",
+//       email: "tultuleee@gmail.com",
+//       password: "password"
+//    }
+// ]
 
 export {handler as GET, handler as POST}

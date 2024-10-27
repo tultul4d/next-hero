@@ -35,7 +35,7 @@ const Navbar = () => {
                         {/* Add dropdown items here if needed */}
                     </ul>
                 </div>
-                <h1 className="btn btn-ghost text-xl">daisyUI</h1>
+                <h1 className="btn btn-ghost text-xl">Next Hero</h1>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
